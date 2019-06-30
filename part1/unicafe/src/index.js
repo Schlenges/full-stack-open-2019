@@ -6,21 +6,23 @@ const Button = ({text, onClick}) => <button onClick={onClick}>{text}</button>
 const Statistics = (props) => {
   if(props.all > 0){
     return(
-      <div>
-        <Statistic text="good" value={props.good} />
-        <Statistic text="neutral" value={props.neutral} />
-        <Statistic text="bad" value={props.bad} />
-        <Statistic text="all" value={props.all} />
-        <Statistic text="average" value={props.average} />
-        <Statistic text="positive" value={props.positive} />
-      </div>
+      <table>
+        <tbody>
+          <Statistic text="good" value={props.good} />
+          <Statistic text="neutral" value={props.neutral} />
+          <Statistic text="bad" value={props.bad} />
+          <Statistic text="all" value={props.all} />
+          <Statistic text="average" value={props.average} />
+          <Statistic text="positive" value={`${props.positive} %`} />
+        </tbody>
+      </table>
     )
   }
 
   return <p>No feedback given</p>
 }
 
-const Statistic = ({text, value}) => <p>{text} {value}</p>
+const Statistic = ({text, value}) => <tr><td>{text}</td><td>{value}</td></tr>
 
 
 const App = () => {
