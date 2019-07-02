@@ -31,7 +31,7 @@ const App = () => {
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
   const all = good + neutral + bad
-  const average = (good * 1 + bad * -1) / all
+  const average = (good - bad) / all
   const positive = good * 100 / all
 
   return (
