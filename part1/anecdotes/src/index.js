@@ -1,18 +1,38 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
-const Display = ({anecdote}) => <p>{anecdote}</p>
+const Display = ({anecdote, votes}) => {
+  return(
+    <div>
+      <p>{anecdote}</p>
+      <p>has {votes} votes</p>
+    </div>
+  )
+}
 
-const Button = ({onClick}) => <button onClick={onClick}>next anecdote</button>
+const Button = ({onClick, text}) => <button onClick={onClick}>{text}</button>
 
 const App = (props) => {
   const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState(new Array(6).fill(0))
   const random = Math.floor(Math.random() * anecdotes.length);
+
+  const updateVotes = () => {
+    console.log("ho")
+    const copy = [...votes]
+    copy[selected]++
+    setVotes(copy)
+  }
+
+  console.log(selected)
+  console.log(votes)
+  console.log(random)
 
   return (
     <div>
-      <Display anecdote={props.anecdotes[selected]} />
-      <Button onClick={() => setSelected(random)} />
+      <Display anecdote={props.anecdotes[selected]} votes={votes[selected]}/>
+      <Button onClick={() => setSelected(random)} text="next anecdote" />
+      <Button onClick={updateVotes} text="vote" />
     </div>
   )
 }
@@ -27,6 +47,5 @@ const anecdotes = [
 ]
 
 ReactDOM.render(
-  <App anecdotes={anecdotes} />,
-  document.getElementById('root')
+  <App anecdotes={anecdotes} />, document.getElementById('root')
 )
