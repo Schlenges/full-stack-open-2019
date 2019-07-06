@@ -15,20 +15,14 @@ const Button = ({onClick, text}) => <button onClick={onClick}>{text}</button>
 const App = (props) => {
   const [selected, setSelected] = useState(0)
   const [votes, setVotes] = useState(new Array(6).fill(0))
-  // const [max, setMax] = useState(0)
+  const [max, setMax] = useState(0)
   const random = Math.floor(Math.random() * anecdotes.length)
 
-  const updateVotes = () => {
-    const copy = [...votes]
-    copy[selected]++
-    setVotes(copy)
-  }
-
-  const getMaxVote = () => {
-    let max = votes[0]
+  const getMaxVote = (updatedVotes) => {
+    let max = updatedVotes[0]
     let index = 0
 
-    votes.forEach((vote, i) => {
+    updatedVotes.forEach((vote, i) => {
       if(vote > max){
         max = vote
         index = i
@@ -36,6 +30,13 @@ const App = (props) => {
     })
 
     return index
+  }
+
+  const updateVotes = () => {
+    const updatedVotes = [...votes]
+    updatedVotes[selected]++
+    setVotes(updatedVotes)
+    setMax(getMaxVote(updatedVotes))
   }
 
   return (
@@ -46,7 +47,7 @@ const App = (props) => {
       <Button onClick={updateVotes} text="vote" />
 
       <h1>Anecdote with most votes</h1>
-      <Display anecdote={anecdotes[getMaxVote()]} votes={votes[getMaxVote()]}/> 
+      <Display anecdote={anecdotes[max]} votes={votes[max]}/> 
     </div>
   )
 }
