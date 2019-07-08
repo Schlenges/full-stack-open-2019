@@ -12,37 +12,27 @@ const Display = ({anecdote, votes}) => {
 
 const Button = ({onClick, text}) => <button onClick={onClick}>{text}</button>
 
-const App = (props) => {
+const App = ({anecdotes}) => {
   const [selected, setSelected] = useState(0)
   const [votes, setVotes] = useState(new Array(6).fill(0))
   const [max, setMax] = useState(0)
+
   const random = Math.floor(Math.random() * anecdotes.length)
-
-  const getMaxVote = (updatedVotes) => {
-    let max = updatedVotes[0]
-    let index = 0
-
-    updatedVotes.forEach((vote, i) => {
-      if(vote > max){
-        max = vote
-        index = i
-      }
-    })
-
-    return index
-  }
 
   const updateVotes = () => {
     const updatedVotes = [...votes]
     updatedVotes[selected]++
     setVotes(updatedVotes)
-    setMax(getMaxVote(updatedVotes))
+
+    if(updatedVotes[max] < updatedVotes[selected]){
+      setMax(selected)
+    }
   }
 
   return (
     <div>
       <h1>Anecdote of the day</h1>
-      <Display anecdote={props.anecdotes[selected]} votes={votes[selected]}/>
+      <Display anecdote={anecdotes[selected]} votes={votes[selected]}/>
       <Button onClick={() => setSelected(random)} text="next anecdote" />
       <Button onClick={updateVotes} text="vote" />
 
