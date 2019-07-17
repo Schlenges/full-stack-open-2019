@@ -14,7 +14,7 @@ const Button = ({onClick, text}) => <button onClick={onClick}>{text}</button>
 
 const App = ({anecdotes}) => {
   const [selected, setSelected] = useState(0)
-  const [votes, setVotes] = useState(new Array(6).fill(0))
+  const [votes, setVotes] = useState(new Array(anecdotes.length).fill(0))
   const [max, setMax] = useState(0)
 
   const random = Math.floor(Math.random() * anecdotes.length)
