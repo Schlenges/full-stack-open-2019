@@ -18,15 +18,13 @@ const App = () => {
   }, [])
 
   const searchMatches = countries.filter(country =>
-    country.name.toLowerCase().startsWith(filterTerm.toLowerCase())
+      country.name.toLowerCase().startsWith(filterTerm.toLowerCase())
     )
 
   return(
     <div>
       <Search setFilterTerm={setFilterTerm} />
-      <CountryDisplay countries={searchMatches} 
-                      setFilterTerm={setFilterTerm}
-      />
+      <CountryDisplay countries={searchMatches} setFilterTerm={setFilterTerm} />
     </div>
   )
 }

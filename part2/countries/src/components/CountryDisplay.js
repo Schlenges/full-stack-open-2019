@@ -10,18 +10,19 @@ const CountryDisplay = ({countries, setFilterTerm}) => {
 const CountryDetail = ({country}) => (
   <div>
     <h2>{country.name}</h2>
-    <p>{country.capital}</p>
-    <p>{country.population}</p>
+    <p>capital {country.capital}</p>
+    <p>population {country.population}</p>
     <h3>languages</h3>
     <ul>
-      {country.languages.map((lang, i) => <li key={i}>{lang.name}</li>)}
+      {country.languages.map(lang => <li key={lang.name}>{lang.name}</li>)}
     </ul>
     <img src={country.flag} alt="country flag" />
   </div>
 )
 
 const CountryList = ({countries, setFilterTerm}) => countries.map(country => 
-  <ListItem key={country.name} country={country} setFilterTerm={setFilterTerm} />)
+  <ListItem key={country.name} country={country} setFilterTerm={setFilterTerm} />
+)
 
 const ListItem = ({country, setFilterTerm}) => (
   <div>
