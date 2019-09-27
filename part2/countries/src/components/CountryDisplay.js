@@ -1,11 +1,10 @@
 import React from 'react'
 
-const CountryDisplay = ({countries, setSearchTerm}) => {
-
+const CountryDisplay = ({countries, setFilterTerm}) => {
   if(countries.length > 10) return <p>Too many matches, specify another filter</p>
   if(countries.length === 1) return <CountryDetail country={countries[0]} />
 
-  return <CountryList countries={countries} setSearchTerm={setSearchTerm}/>
+  return <CountryList countries={countries} setFilterTerm={setFilterTerm}/>
 }
 
 const CountryDetail = ({country}) => (
@@ -21,13 +20,12 @@ const CountryDetail = ({country}) => (
   </div>
 )
 
+const CountryList = ({countries, setFilterTerm}) => countries.map(country => 
+  <ListItem key={country.name} country={country} setFilterTerm={setFilterTerm} />)
 
-const CountryList = ({countries, setSearchTerm}) => countries.map(country => 
-  <ListItem key={country.name} country={country} setSearchTerm={setSearchTerm} />)
-
-const ListItem = ({country, setSearchTerm}) => (
+const ListItem = ({country, setFilterTerm}) => (
   <div>
-    {country.name} <button onClick={() => setSearchTerm(country.name)}>show</button>
+    {country.name} <button onClick={() => setFilterTerm(country.name)}>show</button>
   </div>
 )
 
