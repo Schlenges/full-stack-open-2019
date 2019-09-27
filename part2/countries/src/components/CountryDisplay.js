@@ -1,43 +1,33 @@
-import React, {useState} from 'react'
+import React from 'react'
 
-const CountryDisplay = ({countries, searchTerm}) => {
-  const [selectedCountry, setSelectedCountry] = useState('')
+const CountryDisplay = ({countries, setSearchTerm}) => {
 
-  const matches = countries.filter(country =>
-    country.name.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+  if(countries.length > 10) return <p>Too many matches, specify another filter</p>
+  if(countries.length === 1) return <CountryDetail country={countries[0]} />
 
-  // const displayDetails = (country) => <CountryDetail country={country} />
-
-  if(selectedCountry !== '') return <CountryDetail country={selectedCountry} />
-  if(matches.length > 10) return <p>Too many matches, specify another filter</p>
-  if(matches.length === 1) setSelectedCountry(matches[0])
-
-  return <CountryList countries={matches} setSelectedCountry={setSelectedCountry}/>
+  return <CountryList countries={countries} setSearchTerm={setSearchTerm}/>
 }
 
-const CountryDetail = ({country}) => {
-return (
-    <div>
-      <h2>{country.name}</h2>
-      <p>{country.capital}</p>
-      <p>{country.population}</p>
-      <h3>languages</h3>
-      <ul>
-        {country.languages.map((lang, i) => <li key={i}>{lang.name}</li>)}
-      </ul>
-      <img src={country.flag} alt="country flag" />
-    </div>
-  )
-}
-
-
-const CountryList = ({countries, setSelectedCountry}) => countries.map(country => 
-  <ListItem country={country} setSelectedCountry={setSelectedCountry} />)
-
-const ListItem = ({country, setSelectedCountry}) => (
+const CountryDetail = ({country}) => (
   <div>
-    {country.name} <button onClick={() => setSelectedCountry(country)}>show</button>
+    <h2>{country.name}</h2>
+    <p>{country.capital}</p>
+    <p>{country.population}</p>
+    <h3>languages</h3>
+    <ul>
+      {country.languages.map((lang, i) => <li key={i}>{lang.name}</li>)}
+    </ul>
+    <img src={country.flag} alt="country flag" />
+  </div>
+)
+
+
+const CountryList = ({countries, setSearchTerm}) => countries.map(country => 
+  <ListItem key={country.name} country={country} setSearchTerm={setSearchTerm} />)
+
+const ListItem = ({country, setSearchTerm}) => (
+  <div>
+    {country.name} <button onClick={() => setSearchTerm(country.name)}>show</button>
   </div>
 )
 

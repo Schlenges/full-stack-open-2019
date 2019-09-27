@@ -17,11 +17,15 @@ const App = () => {
       .then(res => setCountries(res.data))
   }, [])
 
+  const matches = countries.filter(country =>
+    country.name.toLowerCase().startsWith(searchTerm.toLowerCase())
+    )
+
   return(
     <div>
       <Search setSearchTerm={setSearchTerm} />
-      <CountryDisplay countries={countries} 
-                      searchTerm={searchTerm}
+      <CountryDisplay countries={matches} 
+                      setSearchTerm={setSearchTerm}
       />
     </div>
   )
