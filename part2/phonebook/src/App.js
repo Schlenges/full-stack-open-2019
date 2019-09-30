@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import axios from 'axios'
+import personsService from './services/persons'
 
 const Filter = ({setSearchTerm}) => (
   <div>
@@ -38,22 +38,30 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons')
-      .then(res => setPersons(res.data))
+    personsService.getAll()
+      .then(res => setPersons(res))
   }, [])
 
   const addPerson = (event) => {
     event.preventDefault()
+    const newPerson = {
+      name: newName,
+      number: newNumber
+    }
 
-    persons.map(person => {
-      if(person.name === newName){
-        return alert(`${newName} already exists`)
-      }
-      return setPersons(persons.concat({name: newName, number: newNumber}))
-    })
+    personsService.create(newPerson)
+      .then(res => {
+        persons.map(person => {
+          if(person.name === res.name){
+            return alert(`${res.name} already exists`)
+          }
+          return setPersons(persons.concat(res))
+        })
 
-    setNewName('')
-    setNewNumber('')
+        setNewName('')
+        setNewNumber('')
+      })
+      .catch(err => console.log(err))
   }
 
   return (
