@@ -21,14 +21,15 @@ const PersonForm = (props) => (
   </form>
 )
 
-const Persons = ({persons, searchTerm}) => persons.map(person => 
-  <Person key={person.name} name={person.name} number={person.number} searchTerm={searchTerm} />
+const Persons = ({persons, searchTerm, deletePerson}) => persons.map(person => (
+  person.name.toLowerCase().includes(searchTerm.toLowerCase())
+    ? <Person key={person.name} person={person} deletePerson={deletePerson} />
+    : null
+  )
 )
 
-const Person = ({name, number, searchTerm}) => (
-  name.toLowerCase().includes(searchTerm.toLowerCase()) ?
-    <p>{name} {number}</p> :
-    null
+const Person = ({person, deletePerson}) => (
+  <p>{person.name} {person.number} <button onClick={() => deletePerson(person)}>delete</button></p>
 )
 
 const App = () => {
@@ -64,6 +65,13 @@ const App = () => {
       .catch(err => console.log(err))
   }
 
+  const deletePerson = (person) => {
+    if(window.confirm(`Delete ${person.name}?`))
+    return personsService.remove(person.id)
+      .then(setPersons(persons.filter(p => p.id !== person.id)))
+      .catch(err => console.log(err))
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -82,7 +90,7 @@ const App = () => {
       
       <h2>Numbers</h2>
       
-      <Persons persons={persons} searchTerm={searchTerm} />
+      <Persons persons={persons} searchTerm={searchTerm} deletePerson={deletePerson}/>
 
     </div>
   )
