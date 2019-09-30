@@ -17,14 +17,6 @@ const App = () => {
       .then(res => setCountries(res.data))
   }, [])
 
-  /* useEffect(() => {
-    const key = "c10582903f83bfc6c5b7da3cf54762d8"
-    const url = `http://api.openweathermap.org/data/2.5/weather?q=${filterTerm}&units=metric&APPID=${key}`
-  
-    axios.get(url)
-      .then(res => setWeather(res.data))
-  }, [filterTerm]) */
-
   const searchMatches = countries.filter(country =>
       country.name.toLowerCase().startsWith(filterTerm.toLowerCase())
     )
@@ -32,9 +24,7 @@ const App = () => {
   return(
     <div>
       <Search setFilterTerm={setFilterTerm} />
-      <CountryDisplay countries={searchMatches} 
-                      setFilterTerm={setFilterTerm} 
-      />
+      <CountryDisplay countries={searchMatches} setFilterTerm={setFilterTerm} />
     </div>
   )
 }
