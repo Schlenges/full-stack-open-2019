@@ -4,7 +4,7 @@ import CountryDisplay from './components/CountryDisplay'
 
 const Search = ({setFilterTerm}) => (
   <p>
-    find countries: <input onChange={e => setFilterTerm(e.target.value)} />
+    find countries: <input type="text" onChange={e => setFilterTerm(e.target.value)} />
   </p>
 )
 

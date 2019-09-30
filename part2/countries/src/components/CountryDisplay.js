@@ -1,12 +1,15 @@
 import React from 'react'
 import Weather from './Weather'
 
-const CountryDisplay = ({countries, setFilterTerm}) => {
-  if(countries.length > 10) return <p>Too many matches, specify another filter</p>
-  if(countries.length === 1) return <CountryDetail country={countries[0]} />
+const CountryList = ({countries, setFilterTerm}) => countries.map(country => 
+  <ListItem key={country.name} country={country} setFilterTerm={setFilterTerm} />
+)
 
-  return <CountryList countries={countries} setFilterTerm={setFilterTerm}/>
-}
+const ListItem = ({country, setFilterTerm}) => (
+  <div>
+    {country.name} <button onClick={() => setFilterTerm(country.name)}>show</button>
+  </div>
+)
 
 const CountryDetail = ({country}) => (
   <div>
@@ -22,14 +25,11 @@ const CountryDetail = ({country}) => (
   </div>
 )
 
-const CountryList = ({countries, setFilterTerm}) => countries.map(country => 
-  <ListItem key={country.name} country={country} setFilterTerm={setFilterTerm} />
-)
+const CountryDisplay = ({countries, setFilterTerm}) => {
+  if(countries.length > 10) return <p>Too many matches, specify another filter</p>
+  if(countries.length === 1) return <CountryDetail country={countries[0]} />
 
-const ListItem = ({country, setFilterTerm}) => (
-  <div>
-    {country.name} <button onClick={() => setFilterTerm(country.name)}>show</button>
-  </div>
-)
+  return <CountryList countries={countries} setFilterTerm={setFilterTerm}/>
+}
 
 export default CountryDisplay
