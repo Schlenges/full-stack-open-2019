@@ -1,6 +1,16 @@
 import React, {useState, useEffect} from 'react'
 import personsService from './services/persons'
 
+const Notification = ({notification}) => {
+  if(!notification) return null
+
+  return (
+    <div className={notification.error ? "error" : "success"}>
+      {notification.message}
+    </div>
+  )
+}
+
 const Filter = ({setSearchTerm}) => (
   <div>
     filter shown with <input onChange={event => setSearchTerm(event.target.value)} />
@@ -37,6 +47,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
+  const [notification, setNotification] = useState()
 
   useEffect(() => {
     personsService.getAll()
@@ -58,6 +69,8 @@ const App = () => {
       : personsService.create(newPerson)
           .then(res => {
             setPersons(persons.concat(res))
+            setNotification({message: `Added ${res.name}`, error: false})
+            setTimeout(() => {setNotification(null)}, 5000)
             setNewName('')
             setNewNumber('')
           })
@@ -75,14 +88,19 @@ const App = () => {
   const updatePerson = (person) => (
     window.confirm(`${person.name} is already added to the phonebook, replace the older number with a new one?`)
       ? personsService.update(person)
-        .then(res => setPersons(persons.map(p => p.id !== res.id ? p : res)))
+        .then(res => {
+          setPersons(persons.map(p => p.id !== res.id ? p : res))
+          setNotification({message: `Updated ${res.name}`})
+          setTimeout(() => {setNotification(null)}, 5000)
+        })
       : null
   )
 
   return (
     <div>
       <h2>Phonebook</h2>
-      
+
+      <Notification notification={notification} />
       <Filter setSearchTerm={setSearchTerm} />
 
       <h2>add new</h2>
