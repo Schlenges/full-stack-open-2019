@@ -1,11 +1,13 @@
 import React, {useState, useEffect} from 'react'
 import personsService from './services/persons'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
 
 const Notification = ({notification}) => {
   if(!notification) return null
 
   return (
-    <div className={notification.error ? "error" : "success"}>
+    <div className={notification.error ? "error notification" : "success notification"}>
       {notification.message}
     </div>
   )
@@ -15,31 +17,6 @@ const Filter = ({setSearchTerm}) => (
   <div>
     filter shown with <input onChange={event => setSearchTerm(event.target.value)} />
   </div>
-)
-
-const PersonForm = (props) => (
-  <form onSubmit={props.addPerson}>
-    <div>
-      name: <input value={props.newName} onChange={event => props.setNewName(event.target.value)} />
-    </div>
-    <div>
-      number: <input value={props.newNumber} onChange={event => props.setNewNumber(event.target.value)} />
-    </div>
-    <div>
-      <button type="submit">add</button>
-    </div>
-  </form>
-)
-
-const Persons = ({persons, searchTerm, deletePerson}) => persons.map(person => (
-  person.name.toLowerCase().includes(searchTerm.toLowerCase())
-    ? <Person key={person.name} person={person} deletePerson={deletePerson} />
-    : null
-  )
-)
-
-const Person = ({person, deletePerson}) => (
-  <p>{person.name} {person.number} <button onClick={() => deletePerson(person)}>delete</button></p>
 )
 
 const App = () => {
@@ -54,35 +31,36 @@ const App = () => {
       .then(res => setPersons(res))
   }, [])
 
+  const handleNotification = (notification) => {
+    setNotification(notification)
+    setTimeout(() => {setNotification(null)}, 5000)
+  }
+
   const addPerson = (event) => {
     event.preventDefault()
-    
+    const existingPerson = persons.find(person => person.name === newName)
     const newPerson = {
       name: newName,
       number: newNumber
     }
-
-    const existingPerson = persons.find(person => person.name === newName)
 
     existingPerson
       ? updatePerson({...existingPerson, number: newNumber})
       : personsService.create(newPerson)
           .then(res => {
             setPersons(persons.concat(res))
-            setNotification({message: `Added ${res.name}`, error: false})
-            setTimeout(() => {setNotification(null)}, 5000)
+            handleNotification({message: `Added ${res.name}`, error: false})
             setNewName('')
             setNewNumber('')
           })
           .catch(err => console.log(err))
   }
 
-
   const deletePerson = (person) => {
     if(window.confirm(`Delete ${person.name}?`))
-    return personsService.remove(person.id)
-      .then(setPersons(persons.filter(p => p.id !== person.id)))
-      .catch(err => console.log(err))
+      return personsService.remove(person.id)
+        .then(setPersons(persons.filter(p => p.id !== person.id)))
+        .catch(err => console.log(err))
   }
 
   const updatePerson = (person) => (
@@ -90,8 +68,15 @@ const App = () => {
       ? personsService.update(person)
         .then(res => {
           setPersons(persons.map(p => p.id !== res.id ? p : res))
-          setNotification({message: `Updated ${res.name}`})
-          setTimeout(() => {setNotification(null)}, 5000)
+          handleNotification({message: `Updated ${res.name}`})
+        })
+        .catch(err => {
+          if(err.message === "Request failed with status code 404"){
+            handleNotification({
+              message: `Information of ${person.name} has already been removed from server`, 
+              error: true
+            })
+          } else {console.log(err)}
         })
       : null
   )
@@ -99,12 +84,10 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-
       <Notification notification={notification} />
       <Filter setSearchTerm={setSearchTerm} />
 
       <h2>add new</h2>
-
       <PersonForm 
         addPerson={addPerson}
         newName={newName}
@@ -114,9 +97,7 @@ const App = () => {
       />
       
       <h2>Numbers</h2>
-      
       <Persons persons={persons} searchTerm={searchTerm} deletePerson={deletePerson}/>
-
     </div>
   )
 }
