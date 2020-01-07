@@ -53,7 +53,7 @@ const App = () => {
             setNewName('')
             setNewNumber('')
           })
-          .catch(err => console.log(err))
+          .catch(err => handleNotification({message: JSON.stringify(err.response.data.error), error: true}))
   }
 
   const deletePerson = (person) => {
