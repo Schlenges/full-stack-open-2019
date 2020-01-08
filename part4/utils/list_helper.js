@@ -8,7 +8,20 @@ const totalLikes = (blogs) => {
   return sum
 }
 
+const favoriteBlog = (blogs) => {
+  if(blogs.length == 0){return {} }
+
+  let favourite = blogs.reduce((max, blog) => blog.likes >= max.likes ? blog : max)
+
+  return {
+    title: favourite.title,
+    author: favourite.author,
+    likes: favourite.likes
+  }
+}
+
 module.exports = {
   dummy,
-  totalLikes
+  totalLikes,
+  favoriteBlog
 }
