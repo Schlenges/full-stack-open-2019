@@ -119,6 +119,32 @@ test('if likes property is missing, it will default to 0', async () => {
   expect(response.body.likes).toEqual(0)
 })
 
+test('missing url results in status code 400', async () => {
+  const newBlog = {
+    title: "The Developer New Year's Resolution Guide",
+    author: "Quincy Larson",
+    likes: 0
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+
+test('missing title results in status code 400', async () => {
+  const newBlog = {
+    author: "Quincy Larson",
+    url: "https://www.freecodecamp.org/news/developer-new-years-resolution-guide/",
+    likes: 0
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
