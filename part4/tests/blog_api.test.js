@@ -85,6 +85,27 @@ test('unique identifier property of a blog is named id', async () => {
   expect(response.body[0].id).toBeDefined()
 })
 
+test('a valid blog can be added', async () => {
+  const newBlog = {
+    title: "The Developer New Year's Resolution Guide",
+    author: "Quincy Larson",
+    url: "https://www.freecodecamp.org/news/developer-new-years-resolution-guide/",
+    likes: 2
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+  const titles = response.body.map(blog => blog.title)
+
+  expect(response.body.length).toBe(initialBlogs.length + 1)
+  expect(titles).toContain("The Developer New Year's Resolution Guide")
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
