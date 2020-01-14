@@ -106,6 +106,19 @@ test('a valid blog can be added', async () => {
   expect(titles).toContain("The Developer New Year's Resolution Guide")
 })
 
+test('if likes property is missing, it will default to 0', async () => {
+  const newBlog = {
+    title: "The Developer New Year's Resolution Guide",
+    author: "Quincy Larson",
+    url: "https://www.freecodecamp.org/news/developer-new-years-resolution-guide/"
+  }
+
+  const response = await api.post('/api/blogs').send(newBlog)
+
+  expect(response.body.likes).toBeDefined()
+  expect(response.body.likes).toEqual(0)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
