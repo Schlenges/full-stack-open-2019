@@ -145,6 +145,21 @@ test('missing title results in status code 400', async () => {
     .expect(400)
 })
 
+test('a blog gets succesfully deleted', async () => {
+  const blogs = await Blog.find({})
+  const blog = blogs[0].toJSON()
+
+  await api
+    .delete(`/api/blogs/${blog.id}`)
+    .expect(204)
+
+  const blogsAfterDeletion = await Blog.find({})
+  expect(blogsAfterDeletion.length).toBe(blogs.length - 1)
+  
+  const titles = blogsAfterDeletion.map(blog => blog.toJSON().title)
+  expect(titles).not.toContain(blog.title)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })

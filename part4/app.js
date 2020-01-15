@@ -8,7 +8,11 @@ const blogsRouter = require('./controllers/blogs')
 const middleware = require('./utils/middleware')
 
 mongoose
-  .connect(config.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(config.MONGO_URL, {
+    useNewUrlParser: true, 
+    useUnifiedTopology: true, 
+    useFindAndModify: false 
+  })
   .catch((error) => console.log('error connecting to MongoDB:', error.message))
 
 app.use(cors())
