@@ -59,6 +59,73 @@ describe('when there is initially one user at db', () => {
   })
 })
 
+describe('adding a new user', () => {
+  test('will fail if username or password is missing', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const missingUsername = {
+      name: "El Salvador",
+      password: "123"
+    }
+
+    const missingPassword = {
+      username: "salvadoro",
+      name: "El Salvador"
+    }
+
+    const resultMissingUsername = await api
+      .post('/api/users')
+      .send(missingUsername)
+      .expect(400)
+
+    expect(resultMissingUsername.body.error).toContain('`username` is required')
+
+    const resultMissingPassword = await api
+      .post('/api/users')
+      .send(missingPassword)
+      .expect(400)
+
+    expect(resultMissingPassword.body.error).toContain('password is required')
+
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd.length).toBe(usersAtStart.length)
+  })
+
+  test('will fail if username or password is shorter than 3 characters', async () => {
+    const usersAtStart = await helper.usersInDb()
+
+    const shortUsername = {
+      username: "El",
+      password: "123"
+    }
+
+    const shortPassword = {
+      username: "salvadoro",
+      password: "1"
+    }
+
+    const resultShortUsername = await api
+      .post('/api/users')
+      .send(shortUsername)
+      .expect(400)
+
+    expect(resultShortUsername.body.error).toContain('is shorter than the minimum allowed')
+
+    const resultShortPassword = await api
+      .post('/api/users')
+      .send(shortPassword)
+      .expect(400)
+
+    expect(resultShortPassword.body.error).toContain('password must be at least 3 characters')
+
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd.length).toBe(usersAtStart.length)
+  })
+})
+
+/* Also, implement tests which check that invalid users are not created 
+and invalid add user operation returns a suitable status code and error message.  */
+
 afterAll(() => {
   mongoose.connection.close()
 })
