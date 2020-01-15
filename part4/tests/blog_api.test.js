@@ -160,6 +160,19 @@ test('a blog gets succesfully deleted', async () => {
   expect(titles).not.toContain(blog.title)
 })
 
+test('a blog gets succesfully updated', async () => {
+  const blogs = await Blog.find({})
+  const blog = blogs[0].toJSON()
+  blog.likes = 10
+
+  await api
+    .put(`/api/blogs/${blog.id}`)
+    .send(blog)
+
+  const updatedBlogs = await Blog.find({})
+  expect(updatedBlogs[0].toJSON().likes).toBe(10)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
