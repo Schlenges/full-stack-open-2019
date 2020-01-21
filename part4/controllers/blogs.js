@@ -9,7 +9,7 @@ blogsRouter.get('/', async (request, response) => {
 })
 
 blogsRouter.post('/', async (request, response, next) => {
-  const reqObject = request.body
+  let reqObject = request.body
 
   try {
     const decodedToken = jwt.verify(request.token, process.env.SECRET)
