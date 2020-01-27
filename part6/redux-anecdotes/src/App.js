@@ -1,18 +1,14 @@
 import React from 'react';
-import { increaseVote, createAnecdote } from './reducers/anecdoteReducer'
+import { increaseVote } from './reducers/anecdoteReducer'
+import AnecdoteForm from './components/AnecdoteForm'
 
 const App = (props) => {
-  const anecdotes = props.store.getState()
+  const anecdotes = props.store
+    .getState()
+    .sort((a, b) => b.votes - a.votes)
 
   const vote = (id) => {
     props.store.dispatch(increaseVote(id))
-  }
-
-  const addNote = (event) => {
-    event.preventDefault()
-    const newAnecdote = event.target.anecdote.value
-    event.target.anecdote.value = ''
-    props.store.dispatch(createAnecdote(newAnecdote))
   }
 
   return (
@@ -29,11 +25,7 @@ const App = (props) => {
           </div>
         </div>
       )}
-      <h2>create new</h2>
-      <form onSubmit={addNote}>
-        <div><input name="anecdote" /></div>
-        <button type="submit">create</button>
-      </form>
+      <AnecdoteForm store={props.store} />
     </div>
   )
 }
