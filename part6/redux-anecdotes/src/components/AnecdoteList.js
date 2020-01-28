@@ -3,27 +3,15 @@ import { connect } from 'react-redux'
 import { increaseVote } from '../reducers/anecdoteReducer'
 import { showNotification, removeNotification} from '../reducers/notificationReducer'
 
-const AnecdoteList = ({anecdotes, filter, increaseVote, showNotification, removeNotification}) => {
-  anecdotes.sort((a, b) => b.votes - a.votes)
-
-  const anecdotesToShow = () => {
-    return anecdotes.filter(anecdote => (
-      anecdote.content
-        .toLowerCase()
-        .includes(filter)
-    ))
-  }
-
+const AnecdoteList = ({visibleAnecdotes, increaseVote, handleNotification}) => {
   const vote = (anecdote) => {
     increaseVote(anecdote.id)
-    
-    showNotification(`you voted for "${anecdote.content}"`)
-    setTimeout(() => {removeNotification()}, 5000)
+    handleNotification(anecdote)
   }
 
   return (
     <div>
-      {anecdotesToShow().map(anecdote =>
+      {visibleAnecdotes.map(anecdote =>
         <div key={anecdote.id}>
           <div>
             {anecdote.content}
@@ -38,15 +26,26 @@ const AnecdoteList = ({anecdotes, filter, increaseVote, showNotification, remove
   )
 }
 
+const anecdotesToShow = ({anecdotes, filter}) => {
+  anecdotes.sort((a, b) => b.votes - a.votes)
+
+  return anecdotes.filter(anecdote => (
+    anecdote.content
+      .toLowerCase()
+      .includes(filter)
+  ))
+}
+
 const mapStateToProps = (state) => ({
-  anecdotes: state.anecdotes,
-  filter: state.filter
+  visibleAnecdotes: anecdotesToShow(state)
 })
 
-const mapDispatchToProps = {
-  increaseVote,
-  showNotification,
-  removeNotification
-}
+const mapDispatchToProps = (dispatch) => ({
+  increaseVote: (id) => dispatch(increaseVote(id)),
+  handleNotification: (anecdote) => {
+    dispatch(showNotification(`you voted for "${anecdote.content}"`))
+    setTimeout(() => dispatch(removeNotification()), 5000)
+  }
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(AnecdoteList)
