@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux'
 import { createAnecdote } from '../reducers/anecdoteReducer'
 import { showNotification, removeNotification } from '../reducers/notificationReducer'
-import anecdotesService from '../services/anecdotes'
 
 const AnecdoteForm = ({createAnecdote, handleNotification}) => {
 
@@ -10,9 +9,7 @@ const AnecdoteForm = ({createAnecdote, handleNotification}) => {
     event.preventDefault()
     const content = event.target.anecdote.value
     event.target.anecdote.value = ''
-
-    const newAnecdote = await anecdotesService.createNew(content)
-    createAnecdote(newAnecdote)
+    createAnecdote(content)
     handleNotification(content)
   }
 
