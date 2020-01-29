@@ -8,10 +8,15 @@ const notificationReducer = (state = null, action) => {
   }
 }
 
-export const showNotification = (message) => ({
-  type: 'SHOW',
-  message
-})
+export const showNotification = (message, time) => (
+  (dispatch) => {
+    setTimeout(() => dispatch(removeNotification()), time * 1000)
+    dispatch({
+      type: 'SHOW',
+      message
+    })
+  }
+)
 
 export const removeNotification = () => ({
   type: 'REMOVE'

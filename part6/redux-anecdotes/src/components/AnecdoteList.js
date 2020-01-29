@@ -1,12 +1,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { increaseVote } from '../reducers/anecdoteReducer'
-import { showNotification, removeNotification} from '../reducers/notificationReducer'
+import { showNotification } from '../reducers/notificationReducer'
 
-const AnecdoteList = ({visibleAnecdotes, increaseVote, handleNotification}) => {
+const AnecdoteList = ({visibleAnecdotes, increaseVote, showNotification}) => {
+  
   const vote = (anecdote) => {
     increaseVote(anecdote)
-    handleNotification(anecdote)
+    showNotification(`you voted for "${anecdote.content}"`, 3)
   }
 
   return (
@@ -40,12 +41,9 @@ const mapStateToProps = (state) => ({
   visibleAnecdotes: anecdotesToShow(state)
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  increaseVote: (anecdote) => dispatch(increaseVote(anecdote)),
-  handleNotification: (anecdote) => {
-    dispatch(showNotification(`you voted for "${anecdote.content}"`))
-    setTimeout(() => dispatch(removeNotification()), 5000)
-  }
-})
+const mapDispatchToProps = {
+  increaseVote,
+  showNotification
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(AnecdoteList)
