@@ -5,7 +5,7 @@ import { showNotification, removeNotification} from '../reducers/notificationRed
 
 const AnecdoteList = ({visibleAnecdotes, increaseVote, handleNotification}) => {
   const vote = (anecdote) => {
-    increaseVote(anecdote.id)
+    increaseVote(anecdote)
     handleNotification(anecdote)
   }
 
@@ -41,7 +41,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  increaseVote: (id) => dispatch(increaseVote(id)),
+  increaseVote: (anecdote) => dispatch(increaseVote(anecdote)),
   handleNotification: (anecdote) => {
     dispatch(showNotification(`you voted for "${anecdote.content}"`))
     setTimeout(() => dispatch(removeNotification()), 5000)
