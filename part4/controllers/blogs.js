@@ -36,6 +36,22 @@ blogsRouter.post('/', async (request, response, next) => {
   }
 })
 
+blogsRouter.post('/:id/comments', async (request, response, next) => {
+  const comment = request.body.comment
+
+  try {
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    if(!request.token || !decodedToken.id){
+      return response.status(401).json({error: 'token missing or invalid'})
+    }
+
+    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, {$push: {comments: comment}}, {new: true})
+    response.status(201).json(updatedBlog)
+  } catch(error){
+    next(error)
+  }
+})
+
 blogsRouter.delete('/:id', async (request, response, next) => {
   try{
     const decodedToken = jwt.verify(request.token, process.env.SECRET)
